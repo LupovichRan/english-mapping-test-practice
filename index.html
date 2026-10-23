@@ -5,83 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>מתרגלים אנגלית למבחן המיפוי – כיתה ד׳</title>
 <style>
-  :root { --bg:#f7f8fc; --card:#ffffff; --text:#1f2430; --muted:#5b6475; --border:#dde1ea; --ok:#1e9e5a; --okbg:#e3f7ec; --bad:#d64545; --badbg:#fde8e8; --c1:#3b82f6; --c2:#f59e0b; --c3:#06b6d4; --c4:#22c55e; --c5:#ec4899; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#14161c; --card:#1d2029; --text:#eef0f5; --muted:#a3abbd; --border:#333847; --okbg:#173a28; --badbg:#3d1d1d; --ok:#4ade80; --bad:#f87171; } }
+  :root { --bg:#f7f8fc; --card:#ffffff; --text:#1f2430; --muted:#5b6475; --border:#dde1ea; --ok:#1e9e5a; --okbg:#e3f7ec; --bad:#d64545; --badbg:#fde8e8; --c1:#3b82f6; --c2:#f59e0b; --c3:#06b6d4; --c4:#22c55e; --c5:#ec4899; --go:#2563eb; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14161c; --card:#1d2029; --text:#eef0f5; --muted:#a3abbd; --border:#333847; --okbg:#173a28; --badbg:#3d1d1d; --ok:#4ade80; --bad:#f87171; --go:#3b82f6; } }
   * { box-sizing: border-box; }
   body { margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; line-height:1.5; }
-  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 60px; }
-  h1 { font-size: 28px; margin: 0 0 6px; }
-  .summary { color: var(--muted); margin: 0 0 18px; }
-  nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 20px; }
-  nav a { text-decoration:none; color:var(--text); background:var(--card); border:1px solid var(--border); border-radius:999px; padding:6px 12px; font-size:14px; }
-  section { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; margin: 0 0 20px; }
-  .shead { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 8px; }
-  h2 { font-size: 22px; margin: 0; }
-  .score { font-weight:700; border-radius:999px; padding:4px 12px; background:var(--bg); border:1px solid var(--border); }
+  main { max-width: 720px; margin: 0 auto; padding: 18px 14px 60px; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .summary { color: var(--muted); margin: 0 0 12px; font-size:15px; }
+  section, .panel { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px; margin: 0 0 16px; }
+  details > summary { cursor:pointer; font-weight:700; }
+  .shead { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 10px; }
+  h2 { font-size: 21px; margin: 0; }
+  .score { font-weight:700; border-radius:999px; padding:4px 12px; background:var(--bg); border:1px solid var(--border); unicode-bidi:isolate; }
   .score.full { background:var(--okbg); color:var(--ok); border-color:var(--ok); }
-  .intro { color:var(--muted); margin: 0 0 12px; }
-  .q { border:1px solid var(--border); border-right:6px solid var(--accent); border-radius:16px; padding:16px; margin-bottom:14px; display:flex; flex-direction:column; gap:12px; }
+  /* journey map */
+  .map { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; align-items:center; margin-bottom:10px; }
+  .island { display:flex; flex-direction:column; align-items:center; gap:2px; min-width:62px; padding:6px 8px; border-radius:16px; font-size:26px; line-height:1.1; }
+  .island small { font-size:11px; color:var(--muted); }
+  .island.active { border-color:var(--go); box-shadow:0 0 0 3px color-mix(in srgb, var(--go) 25%, transparent); }
+  .island.done { background:var(--okbg); }
+  .island:disabled { opacity:.45; }
+  .dash { color:var(--muted); font-size:14px; letter-spacing:2px; }
+  .toprow { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  /* mascot */
+  .mascot { display:flex; gap:10px; align-items:center; margin-bottom:12px; }
+  .face { font-size:46px; display:inline-block; line-height:1; }
+  .bubble { background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:8px 12px; font-size:16px; font-weight:600; flex:1; }
+  /* progress */
+  .progress { margin-bottom:12px; }
+  .ptext { font-size:14px; color:var(--muted); margin-bottom:4px; }
+  .bar { height:10px; background:var(--border); border-radius:99px; overflow:hidden; }
+  .bar > div { height:100%; background:var(--accent); border-radius:99px; transition:width .35s ease; }
+  /* question */
+  .q { border:1px solid var(--border); border-right:6px solid var(--accent); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:12px; }
   .qhead { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .num { background:var(--accent); color:#fff; border-radius:999px; min-width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
-  .prompt { font-size:17px; font-weight:600; }
+  .prompt { font-size:18px; font-weight:700; }
   .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
   .opts { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  button { font-family:inherit; border:2px solid var(--border); border-radius:14px; background:var(--card); color:var(--text); padding:10px 16px; min-width:56px; font-size:20px; cursor:pointer; }
-  button:hover:not(:disabled) { border-color: var(--accent, var(--c1)); }
+  button { font-family:inherit; border:2px solid var(--border); border-radius:14px; background:var(--card); color:var(--text); padding:10px 16px; min-width:56px; font-size:20px; cursor:pointer; touch-action:manipulation; }
+  button:hover:not(:disabled) { border-color: var(--accent, var(--go)); }
   button:disabled { cursor:default; }
   button.big { font-size:38px; }
   button.correct { background:var(--okbg); border-color:var(--ok); }
   button.wrong { background:var(--badbg); border-color:var(--bad); }
-  button.dim { opacity:.55; }
+  button.dim { opacity:.5; }
   .audio-btn { border-color:var(--accent); }
   .said { color:var(--muted); font-size:15px; }
-  .passage { flex:1 1 240px; background:var(--bg); border-radius:12px; padding:12px; font-size:17px; line-height:1.6; text-align:left; }
+  .passage-box { background:var(--bg); border-radius:12px; padding:10px 12px; margin-bottom:12px; }
+  .passage { font-size:17px; line-height:1.6; text-align:left; margin:8px 0; }
   .show { font-size:36px; font-weight:700; text-align:center; }
-  .show.small { font-size:20px; }
+  .show.small { font-size:21px; }
   .fb { font-size:16px; font-weight:700; }
   .fb.ok { color:var(--ok); } .fb.bad { color:var(--bad); }
   .fb .rev { color:var(--muted); font-weight:400; margin-inline-start:8px; }
-  .done { text-align:center; font-size:20px; font-weight:700; padding:8px; }
-  .primary { background:var(--c1); color:#fff; border-color:var(--c1); font-size:17px; }
+  .nav { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  .next, .primary { background:var(--go); color:#fff; border-color:var(--go); font-weight:700; }
+  .next { font-size:22px; padding:12px 30px; margin-inline-start:auto; }
+  .primary { font-size:18px; }
   .quiet { font-size:17px; }
+  /* level up */
+  .levelup { text-align:center; display:flex; flex-direction:column; gap:10px; align-items:center; }
+  .levelup h3 { font-size:24px; margin:0; }
+  .bigscore { font-size:46px; font-weight:800; unicode-bidi:isolate; }
+  .stars { font-size:34px; letter-spacing:4px; }
+  .minimap { display:flex; gap:4px; flex-wrap:wrap; justify-content:center; font-size:26px; }
+  .minimap span { padding:4px 6px; border-radius:12px; }
+  .minimap .ok { background:var(--okbg); }
+  .minimap .nextstop { outline:2px dashed var(--go); }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
   .metrics { display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0; }
-  .metric { flex:1 1 160px; border:1px solid var(--border); border-radius:14px; padding:14px; text-align:center; }
-  .metric .v { font-size:30px; font-weight:800; }
+  .metric { flex:1 1 150px; border:1px solid var(--border); border-radius:14px; padding:12px; text-align:center; }
+  .metric .v { font-size:30px; font-weight:800; unicode-bidi:isolate; }
   .metric .l { color:var(--muted); }
+  .rows { width:100%; border-collapse:collapse; }
+  .rows td { padding:8px 4px; border-bottom:1px solid var(--border); }
+  .rows td.n { text-align:left; font-weight:700; white-space:nowrap; }
   label.toggle { display:inline-flex; gap:8px; align-items:center; cursor:pointer; margin-top:8px; }
-  .links { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:10px; }
+  .links { display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:10px; }
   .links a { display:block; text-decoration:none; color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px 12px; }
   .links a small { display:block; color:var(--muted); direction:ltr; text-align:right; }
   .topic { font-weight:700; margin: 14px 0 8px; }
+  /* animations */
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-10px)} 60%{transform:translateY(0)} 80%{transform:translateY(-4px)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+  @keyframes pop { 0%{transform:scale(.6);opacity:0} 70%{transform:scale(1.1);opacity:1} 100%{transform:scale(1)} }
+  @keyframes fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+  .anim-bounce { animation: bounce .6s ease; }
+  .anim-shake { animation: shake .45s ease; }
+  .anim-pop { animation: pop .5s ease; }
+  .fade { animation: fadein .25s ease; }
+  @media (prefers-reduced-motion: reduce) { .anim-bounce,.anim-shake,.anim-pop,.fade { animation:none; } .bar > div { transition:none; } }
 </style>
 </head>
 <body>
 <main>
   <h1>מתרגלים אנגלית למבחן המיפוי – כיתה ד׳ 🌸</h1>
-  <p class="summary">תרגול כיפי לקראת מבחן המיפוי באנגלית לכיתה ד׳. חמישה חלקים כמו במבחן, עם תשובה מיידית וציון לכל חלק.</p>
-  <nav id="toc"></nav>
-  <section id="how">
-    <div class="shead"><h2>איך משחקים 🎮</h2></div>
-    <p>לוחצים על התשובה שנראית לך נכונה. ירוק זה נכון, אדום זה לא נכון. בסוף כל חלק אפשר לערבב את השאלות ולנסות שוב. בשאלות ההקשבה צריך להדליק את הרמקול 🔊.</p>
+  <p class="summary">מסע של 5 איים, כמו 5 החלקים במבחן. שאלה אחת בכל פעם.</p>
+  <nav class="map" id="map" aria-label="מפת המסע"></nav>
+  <div class="toprow"><button class="quiet" id="speedBtn">⚡ סבב מהיר: 5 שאלות</button></div>
+  <div id="view"></div>
+  <details class="panel" id="how">
+    <summary>ℹ️ איך משחקים (וגם להורים)</summary>
+    <p>לוחצים על התשובה. ירוק זה נכון, אדום זה לא נכון. אחר כך לוחצים "הבא". בסוף כל אי מקבלים כוכבים ופותחים את האי הבא. בשאלות ההקשבה צריך להדליק את הרמקול 🔊. ההתקדמות נשמרת בדפדפן הזה.</p>
     <label class="toggle"><input type="checkbox" id="showText"> להורים: להציג את הטקסט שמוקרא</label>
-  </section>
-  <div id="quiz"></div>
-  <section id="total">
-    <div class="shead"><h2>הציון הכולל 🏆</h2></div>
-    <p id="totalMsg"></p>
-    <div class="metrics">
-      <div class="metric"><div class="v" id="totalScore" dir="ltr"></div><div class="l">תשובות נכונות</div></div>
-      <div class="metric"><div class="v" id="totalPct" dir="ltr"></div><div class="l">אחוז הצלחה</div></div>
-    </div>
-    <button class="quiet" id="resetAll">🔄 מתחילים הכול מחדש</button>
-  </section>
-  <section id="links">
-    <div class="shead"><h2>קישורים מומלצים לתרגול 🔗</h2></div>
-    <p class="intro">אתרים חינמיים, מסודרים לפי נושא.</p>
+  </details>
+  <details class="panel" id="links">
+    <summary>🔗 קישורים מומלצים לתרגול</summary>
+    <p class="summary">אתרים חינמיים, מסודרים לפי נושא.</p>
     <div id="linkList"></div>
-  </section>
+  </details>
 </main>
 <script>
+
 const P = {
   pic: "הקשיבי למשפט ובחרי את התמונה המתאימה",
   first: "הקשיבי למילה. באיזו אות היא מתחילה?",
@@ -90,7 +125,7 @@ const P = {
   story: "הקשיבי לסיפור הקצר ובחרי את התמונה המתאימה",
   small: "מצאי את האות הקטנה שמתאימה לאות הגדולה",
   capital: "מצאי את האות הגדולה שמתאימה לאות הקטנה",
-  vowel: "איזו אות חסרה במילה? (a, e, i, o, u)",
+  vowel: "איזו אות חסרה במילה? \u2066(a, e, i, o, u)\u2069",
   opening: "באיזו אות מתחילה המילה של התמונה?",
   odd: "איזו מילה לא שייכת לקבוצה?",
   heb: "מה פירוש המילה בעברית?",
@@ -186,87 +221,202 @@ function speak(text,rate){
 }
 if("speechSynthesis" in window){ window.speechSynthesis.getVoices(); }
 
-const state = { seeds:{}, picks:{}, showText:false };
-SECTIONS.forEach(d=>{ state.seeds[d.id]=1; state.picks[d.id]={}; });
-function score(d){ return d.questions.reduce((s,q,i)=>s+(state.picks[d.id][i]===q.correct?1:0),0); }
+const ICONS=["🎧","🔤","🧠","📖","🔎"];
+const NAMES=["אי ההקשבה","אי האותיות","אי המילים","אי הקריאה","אי ההבנה"];
+const CHEERS=["כל הכבוד! 🌟","מעולה! 🎉","וואו, איזו אלופה! 🏆","בדיוק! 💫","יש! ממשיכים 🚀","את כוכבת! ⭐","נהדר! 👏","צדקת! 😺"];
+const OOPS=["לא נורא, ממשיכים! 💪","כמעט! תסתכלי על הירוק 💚","טעויות עוזרות ללמוד 🌱","בפעם הבאה זה יצליח 😊","זה בסדר, לומדים ביחד 🤗"];
+const MASCOT="🦄";
+const KEY="emtp-v3";
+function pickRand(a){ return a[Math.floor(Math.random()*a.length)]; }
+function freshState(){ const s={v:3,cur:0,seeds:{},picks:{},pos:{},completed:{},showText:false,speed:null}; SECTIONS.forEach(d=>{s.seeds[d.id]=1;s.picks[d.id]={};s.pos[d.id]=0;}); return s; }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(KEY)||"null"); if(j&&j.v===3&&SECTIONS.every(d=>j.picks&&j.picks[d.id]&&j.seeds[d.id]!=null&&j.pos[d.id]!=null)) { j.completed=j.completed||{}; return j; } }catch(e){} return freshState(); }
+let state=load();
+const fx={say:null, anim:null};   // transient, not saved
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
 function el(tag, attrs, children){
   const e=document.createElement(tag);
-  if(attrs) for(const k in attrs){ if(k==="class") e.className=attrs[k]; else if(k==="text") e.textContent=attrs[k]; else if(k.startsWith("on")) e.addEventListener(k.slice(2),attrs[k]); else if(k==="style") e.setAttribute("style",attrs[k]); else e.setAttribute(k,attrs[k]); }
-  (children||[]).forEach(c=>{ if(c) e.appendChild(typeof c==="string"?document.createTextNode(c):c); });
+  if(attrs) for(const k in attrs){ const v=attrs[k]; if(v==null) continue; if(k==="class") e.className=v; else if(k==="text") e.textContent=v; else if(k.startsWith("on")) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v); }
+  (children||[]).forEach(c=>{ if(c!=null&&c!==false) e.appendChild(typeof c==="string"?document.createTextNode(c):c); });
   return e;
 }
+function order(d){ return shuffle(d.questions.map((_,i)=>i), rng(state.seeds[d.id]*7919+d.id.length*31)); }
+function optsFor(q,qi,seed,salt){ return q.fixed?q.options:shuffle(q.options, rng(seed*104729+qi*977+salt)); }
+function score(d){ return d.questions.reduce((s,q,i)=>s+(state.picks[d.id][i]===q.correct?1:0),0); }
+function isDone(i){ const d=SECTIONS[i]; return state.pos[d.id]>=d.questions.length; }
+function wasDone(i){ return isDone(i) || !!state.completed[SECTIONS[i].id]; }
+function unlocked(i){ if(i===0) return true; if(i===5) return SECTIONS.every((_,k)=>wasDone(k)); return wasDone(i-1) || Object.keys(state.picks[SECTIONS[i].id]).length>0; }
+function stars(sc,len){ return sc===len?3: sc>=len*0.7?2:1; }
+function starStr(n){ return "⭐".repeat(n)+"☆".repeat(3-n); }
+function go(cur){ state.cur=cur; fx.say=null; fx.anim=null; render(); window.scrollTo({top:0}); }
 
-function renderSection(d, idx){
-  const accent=COLORS[idx%COLORS.length];
-  const sc=score(d), n=Object.keys(state.picks[d.id]).length, len=d.questions.length;
-  const sec=el("section",{id:d.id, style:"--accent:"+accent});
-  sec.appendChild(el("div",{class:"shead"},[el("h2",{text:d.heading}), el("span",{class:"score"+(sc===len?" full":""), dir:"ltr", text:sc+" / "+len})]));
-  sec.appendChild(el("p",{class:"intro",text:d.intro}));
-  const seed=state.seeds[d.id];
-  const order=shuffle(d.questions.map((_,i)=>i), rng(seed*7919+d.id.length*31));
-  order.forEach((qi,pos)=>{
-    const q=d.questions[qi];
-    const opts=q.fixed?q.options:shuffle(q.options, rng(seed*104729+qi*977+d.id.length));
-    const picked=state.picks[d.id][qi], answered=picked!==undefined, right=answered&&picked===q.correct;
-    const card=el("div",{class:"q"});
-    card.appendChild(el("div",{class:"qhead"},[el("span",{class:"num",text:String(pos+1)}), el("span",{class:"prompt",text:q.prompt})]));
-    if(q.audio){
-      card.appendChild(el("div",{class:"row"},[
-        el("button",{class:"audio-btn",onclick:()=>speak(q.audio,0.8),text:"🔊 הקשבה"}),
-        el("button",{onclick:()=>speak(q.audio,0.5),text:"🐢 לאט"}),
-        (state.showText||answered)?el("span",{class:"said",dir:"ltr",text:"“"+q.audio+"”"}):null
-      ]));
-    }
-    if(q.passage){
-      card.appendChild(el("div",{class:"row",style:"align-items:flex-start"},[
-        el("div",{class:"passage",dir:"ltr",text:q.passage}),
-        el("button",{style:"font-size:16px",onclick:()=>speak(q.passage,0.8),text:"🔊 הקראה"})
-      ]));
-    }
-    if(q.show) card.appendChild(el("div",{class:"show"+(q.passage?" small":""),dir:"ltr",text:q.show}));
-    const od=el("div",{class:"opts"});
-    opts.forEach(o=>{
-      let cls=q.big?"big":"";
-      if(answered){ if(o===q.correct) cls+=" correct"; else if(o===picked) cls+=" wrong"; else cls+=" dim"; }
-      const b=el("button",{class:cls,dir:q.heb?"rtl":"ltr",text:o,onclick:()=>{ if(state.picks[d.id][qi]!==undefined) return; state.picks[d.id][qi]=o; render(d.id); }});
-      if(answered) b.disabled=true;
-      od.appendChild(b);
-    });
-    card.appendChild(od);
-    if(answered){
-      card.appendChild(el("div",{class:"fb "+(right?"ok":"bad")},[
-        right?"נכון! כל הכבוד 🌟":"אופס, לא נכון. התשובה הנכונה מסומנת בירוק 💚",
-        q.reveal?el("span",{class:"rev",dir:"ltr",text:q.reveal}):null
-      ]));
-    }
-    sec.appendChild(card);
-  });
-  if(n===len){
-    const msg = sc===len ? "מושלם! "+sc+" מתוך "+len+" 🏆" : sc>=len*0.7 ? "יופי! "+sc+" מתוך "+len+" 🎉 אפשר לערבב ולנסות שוב" : sc+" מתוך "+len+". בואי ננסה שוב, את יכולה! 💪";
-    sec.appendChild(el("div",{class:"done",text:msg}));
+function mascot(text){
+  return el("div",{class:"mascot"},[ el("span",{class:"face"+(fx.anim==="ok"?" anim-bounce":fx.anim==="bad"?" anim-shake":""),"aria-hidden":"true",text:MASCOT}), el("div",{class:"bubble fade",id:"bubble",text:text}) ]);
+}
+function progress(n,len){
+  return el("div",{class:"progress"},[ el("div",{class:"ptext",id:"ptext",text:"שאלה "+n+" מתוך "+len}), el("div",{class:"bar"},[ el("div",{style:"width:"+Math.round((n-1)/len*100)+"%"}) ]) ]);
+}
+function passageBox(q){
+  if(!q.passage) return null;
+  return el("details",{class:"passage-box",open:"open"},[
+    el("summary",{text:"📄 הקטע לקריאה"}),
+    el("div",{class:"passage",dir:"ltr",text:q.passage}),
+    el("button",{class:"quiet audio-btn",onclick:()=>speak(q.passage,0.8),text:"🔊 הקראה"})
+  ]);
+}
+function card(q,opts,picked,onPick){
+  const answered=picked!==undefined, right=answered&&picked===q.correct;
+  const c=el("div",{class:"q fade"+(fx.anim==="bad"?" anim-shake":"")});
+  c.appendChild(el("div",{class:"qhead"},[el("span",{class:"prompt",text:q.prompt})]));
+  if(q.audio){
+    c.appendChild(el("div",{class:"row"},[
+      el("button",{class:"audio-btn",onclick:()=>speak(q.audio,0.8),text:"🔊 הקשבה"}),
+      el("button",{onclick:()=>speak(q.audio,0.5),text:"🐢 לאט"}),
+      (state.showText||answered)?el("span",{class:"said",dir:"ltr",text:"“"+q.audio+"”"}):null
+    ]));
   }
-  sec.appendChild(el("button",{class:"primary",text:"🔀 לערבב ולנסות שוב",onclick:()=>{ state.seeds[d.id]++; state.picks[d.id]={}; render(); document.getElementById(d.id).scrollIntoView({behavior:"smooth"}); }}));
+  if(q.show) c.appendChild(el("div",{class:"show"+(q.passage?" small":""),dir:"ltr",text:q.show}));
+  const od=el("div",{class:"opts"});
+  opts.forEach(o=>{
+    let cls=q.big?"big":"";
+    if(answered){ if(o===q.correct) cls+=" correct"+(fx.anim==="ok"?" anim-pop":""); else if(o===picked) cls+=" wrong"; else cls+=" dim"; }
+    const b=el("button",{class:cls,dir:q.heb?"rtl":"ltr",text:o,onclick:()=>onPick(o)});
+    if(answered) b.disabled=true;
+    od.appendChild(b);
+  });
+  c.appendChild(od);
+  if(answered){
+    c.appendChild(el("div",{class:"fb "+(right?"ok":"bad")},[
+      right?"נכון! ✔️":"לא נכון. התשובה הנכונה מסומנת בירוק 💚",
+      q.reveal?el("span",{class:"rev",dir:"ltr",text:q.reveal}):null
+    ]));
+  }
+  return c;
+}
+function react(right){ fx.anim=right?"ok":"bad"; fx.say=pickRand(right?CHEERS:OOPS); }
+
+function renderMap(){
+  const m=document.getElementById("map"); m.innerHTML="";
+  for(let i=0;i<=5;i++){
+    if(i>0) m.appendChild(el("span",{class:"dash","aria-hidden":"true",text:"···"}));
+    const ok=unlocked(i), done=i<5&&isDone(i);
+    let label = i<5 ? NAMES[i] : "סיום";
+    let sub = i<5 ? (done? starStr(stars(score(SECTIONS[i]),SECTIONS[i].questions.length)) : (ok?label:"נעול")) : label;
+    const b=el("button",{class:"island"+(state.cur===i?" active":"")+(done?" done":""),id:"island-"+i,title:label,onclick:()=>go(i)},[ ok?(i<5?ICONS[i]:"🏰"):"🔒", el("small",{text:sub}) ]);
+    if(!ok) b.disabled=true;
+    m.appendChild(b);
+  }
+}
+
+function renderSection(i){
+  const d=SECTIONS[i], len=d.questions.length, p=state.pos[d.id], ord=order(d);
+  const sc=score(d);
+  const sec=el("section",{id:"sec-"+d.id,"data-sid":d.id,style:"--accent:"+COLORS[i]});
+  sec.appendChild(el("div",{class:"shead"},[ el("h2",{text:ICONS[i]+" "+d.heading.replace(/^\d+\.\s*/,"").replace(/\s\S+$/,"")}), el("span",{class:"score"+(sc===len?" full":""),id:"secScore",dir:"ltr",text:sc+" / "+len}) ]));
+  if(p<len){
+    const qi=ord[p], q=d.questions[qi], picked=state.picks[d.id][qi];
+    sec.appendChild(mascot(fx.say || (p===0&&picked===undefined ? "ברוכה הבאה ל"+NAMES[i]+"! "+d.intro : picked!==undefined ? "כבר ענית על השאלה הזו 😊" : pickRand(["את מצליחה! 😺","עוד שאלה קטנה ✨","מוכנה? 🌈","בואי נראה 👀"]))));
+    sec.appendChild(progress(p+1,len));
+    const pb=passageBox(q); if(pb) sec.appendChild(pb);
+    sec.appendChild(card(q, optsFor(q,qi,state.seeds[d.id],d.id.length), picked, o=>{
+      if(state.picks[d.id][qi]!==undefined) return;
+      state.picks[d.id][qi]=o; react(o===q.correct); render();
+    }));
+    const nav=el("div",{class:"nav"});
+    if(p>0) nav.appendChild(el("button",{class:"quiet",id:"prev",text:"→ הקודם",onclick:()=>{ state.pos[d.id]--; fx.say=null; fx.anim=null; render(); }}));
+    if(picked!==undefined) nav.appendChild(el("button",{class:"next",id:"next",text:p===len-1?"לסיום השלב 🏁":"הבא ←",onclick:()=>{ state.pos[d.id]++; if(state.pos[d.id]>=len) state.completed[d.id]=true; fx.say=null; fx.anim=null; render(); }}));
+    sec.appendChild(nav);
+  } else {
+    const st=stars(sc,len);
+    const msg = sc===len ? "מושלם! קיבלת את כל הכוכבים! 🏆" : st===2 ? "יופי! עוד קצת ותגיעי ל-3 כוכבים 🎉" : "כל הכבוד שסיימת! אפשר לנסות שוב ולאסוף עוד כוכבים 💪";
+    sec.appendChild(mascot(msg));
+    const mm=el("div",{class:"minimap"});
+    for(let k=0;k<5;k++) mm.appendChild(el("span",{class:isDone(k)?"ok":(k===i+1?"nextstop":""),text:isDone(k)?ICONS[k]:(k===i+1?"🔓":"🔒")}));
+    sec.appendChild(el("div",{class:"levelup",id:"levelup"},[
+      el("h3",{class:"anim-pop",text: i<4 ? "🎉 עלית שלב!" : "🏁 סיימת את כל האיים!"}),
+      el("div",{class:"bigscore",id:"sectionResult",dir:"ltr",text:sc+" / "+len}),
+      el("div",{class:"stars anim-pop",text:starStr(st)}),
+      mm,
+      el("div",{class:"btns"},[
+        el("button",{class:"primary",id:"continue",text: i<4 ? "יוצאים ל"+NAMES[i+1]+" ←" : "לציון הכולל 🏆 ←",onclick:()=>go(i+1)}),
+        el("button",{class:"quiet",id:"retry",text:"🔀 לערבב ולנסות שוב",onclick:()=>{ state.seeds[d.id]++; state.picks[d.id]={}; state.pos[d.id]=0; fx.say="יאללה, עוד סיבוב! 🔁"; fx.anim=null; render(); }})
+      ])
+    ]));
+  }
   return sec;
 }
 
-function render(keepId){
-  const y=window.scrollY;
-  const root=document.getElementById("quiz"); root.innerHTML="";
-  SECTIONS.forEach((d,i)=>root.appendChild(renderSection(d,i)));
+function renderFinal(){
   let total=0, answered=0;
   SECTIONS.forEach(d=>{ total+=score(d); answered+=Object.keys(state.picks[d.id]).length; });
   const pct=Math.round(total/TOTAL*100);
-  document.getElementById("totalScore").textContent=total+" / "+TOTAL;
-  document.getElementById("totalPct").textContent=pct+"%";
-  document.getElementById("totalMsg").textContent = answered<TOTAL ? "ענית על "+answered+" מתוך "+TOTAL+" שאלות. ממשיכים!" : pct>=90 ? "וואו! את מוכנה למבחן! 🌟" : pct>=70 ? "עבודה יפה! עוד קצת תרגול ואת שם 🎉" : "כל תרגול עוזר. בואי ננסה שוב מחר 💪";
-  if(keepId) window.scrollTo(0,y);
+  const msg = answered<TOTAL ? "ענית על "+answered+" מתוך "+TOTAL+" שאלות. ממשיכים!" : pct>=90 ? "וואו! את מוכנה למבחן! 🌟" : pct>=70 ? "עבודה יפה! עוד קצת תרגול ואת שם 🎉" : "כל תרגול עוזר. בואי ננסה שוב מחר 💪";
+  const sec=el("section",{id:"final",style:"--accent:var(--go)"});
+  sec.appendChild(el("div",{class:"shead"},[el("h2",{text:"🏰 הציון הכולל"})]));
+  sec.appendChild(mascot(msg));
+  const t=el("table",{class:"rows"});
+  SECTIONS.forEach((d,i)=>{ const sc=score(d); t.appendChild(el("tr",{},[ el("td",{text:ICONS[i]+" "+NAMES[i]}), el("td",{text:isDone(i)?starStr(stars(sc,d.questions.length)):""}), el("td",{class:"n",dir:"ltr",text:sc+" / "+d.questions.length}) ])); });
+  sec.appendChild(t);
+  sec.appendChild(el("p",{id:"totalMsg",text:msg,style:"display:none"}));
+  sec.appendChild(el("div",{class:"metrics"},[
+    el("div",{class:"metric"},[el("div",{class:"v",id:"totalScore",dir:"ltr",text:total+" / "+TOTAL}),el("div",{class:"l",text:"תשובות נכונות"})]),
+    el("div",{class:"metric"},[el("div",{class:"v",id:"totalPct",dir:"ltr",text:pct+"%"}),el("div",{class:"l",text:"אחוז הצלחה"})])
+  ]));
+  sec.appendChild(el("div",{class:"btns"},[
+    el("button",{class:"primary",text:"⚡ סבב מהיר",onclick:startSpeed}),
+    el("button",{class:"quiet",id:"resetAll",text:"🔄 מתחילים את כל המסע מחדש",onclick:()=>{ const seeds=state.seeds; const showText=state.showText; state=freshState(); state.showText=showText; SECTIONS.forEach(d=>{ state.seeds[d.id]=seeds[d.id]+1; }); fx.say=null; fx.anim=null; render(); window.scrollTo({top:0}); }})
+  ]));
+  return sec;
 }
 
-document.getElementById("toc").append(
-  ...[["how","איך משחקים"],...SECTIONS.map(d=>[d.id,d.heading]),["total","הציון הכולל"],["links","קישורים לתרגול"]].map(([id,l])=>el("a",{href:"#"+id,text:l}))
-);
-document.getElementById("showText").addEventListener("change",e=>{ state.showText=e.target.checked; render("keep"); });
-document.getElementById("resetAll").addEventListener("click",()=>{ SECTIONS.forEach(d=>{ state.seeds[d.id]++; state.picks[d.id]={}; }); render(); window.scrollTo({top:0,behavior:"smooth"}); });
+function startSpeed(){
+  const all=[]; SECTIONS.forEach(d=>d.questions.forEach((_,qi)=>all.push([d.id,qi])));
+  const seed=Math.floor(Math.random()*1e9);
+  const back = state.cur==="speed" ? (state.speed&&state.speed.back) : state.cur;
+  state.speed={seed, items:shuffle(all,rng(seed)).slice(0,5), picks:{}, pos:0, back: back==null?0:back};
+  state.cur="speed"; fx.say="⚡ סבב מהיר! 5 שאלות מכל האיים. מוכנה?"; fx.anim=null; render(); window.scrollTo({top:0});
+}
+function renderSpeed(){
+  const s=state.speed, len=s.items.length;
+  const sc=s.items.reduce((a,[sid,qi],k)=>a+(s.picks[k]===SECTIONS.find(d=>d.id===sid).questions[qi].correct?1:0),0);
+  const sec=el("section",{id:"speed",style:"--accent:var(--c5)"});
+  sec.appendChild(el("div",{class:"shead"},[ el("h2",{text:"⚡ סבב מהיר"}), el("span",{class:"score"+(sc===len?" full":""),id:"speedScore",dir:"ltr",text:sc+" / "+len}) ]));
+  if(s.pos<len){
+    const [sid,qi]=s.items[s.pos], q=SECTIONS.find(d=>d.id===sid).questions[qi], picked=s.picks[s.pos];
+    sec.appendChild(mascot(fx.say || (picked!==undefined?"כבר ענית על השאלה הזו 😊":"מהר מהר! ⚡")));
+    sec.appendChild(progress(s.pos+1,len));
+    const pb=passageBox(q); if(pb) sec.appendChild(pb);
+    const k=s.pos;
+    sec.appendChild(card(q, optsFor(q,qi,s.seed,k+1), picked, o=>{ if(s.picks[k]!==undefined) return; s.picks[k]=o; react(o===q.correct); render(); }));
+    const nav=el("div",{class:"nav"});
+    if(picked!==undefined) nav.appendChild(el("button",{class:"next",id:"next",text:s.pos===len-1?"לתוצאה ⚡":"הבא ←",onclick:()=>{ s.pos++; fx.say=null; fx.anim=null; render(); }}));
+    sec.appendChild(nav);
+  } else {
+    sec.appendChild(mascot(sc===len?"5 מתוך 5! את מהירה כמו ברק ⚡🏆":sc>=3?"יופי של סבב! 🎉":"עוד סבב ותשתפרי! 💪"));
+    sec.appendChild(el("div",{class:"levelup"},[
+      el("div",{class:"bigscore",id:"speedResult",dir:"ltr",text:sc+" / "+len}),
+      el("div",{class:"btns"},[
+        el("button",{class:"primary",id:"speedAgain",text:"⚡ עוד סבב",onclick:startSpeed}),
+        el("button",{class:"quiet",id:"speedBack",text:"🗺️ חזרה למסע",onclick:()=>go(s.back)})
+      ])
+    ]));
+  }
+  return sec;
+}
+
+function render(){
+  if(state.cur==="speed" && !state.speed) state.cur=0;
+  if(typeof state.cur==="number" && !unlocked(state.cur)) state.cur=0;
+  renderMap();
+  const v=document.getElementById("view"); v.innerHTML="";
+  v.appendChild(state.cur==="speed"?renderSpeed(): state.cur===5?renderFinal(): renderSection(state.cur));
+  document.getElementById("showText").checked=!!state.showText;
+  fx.anim=null;
+  save();
+}
+
+document.getElementById("speedBtn").addEventListener("click",startSpeed);
+document.getElementById("showText").addEventListener("change",e=>{ state.showText=e.target.checked; render(); });
 const ll=document.getElementById("linkList");
 LINKS.forEach(([topic,items])=>{
   ll.appendChild(el("div",{class:"topic",text:topic}));
