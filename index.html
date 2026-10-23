@@ -70,8 +70,8 @@
     <div class="shead"><h2>הציון הכולל 🏆</h2></div>
     <p id="totalMsg"></p>
     <div class="metrics">
-      <div class="metric"><div class="v" id="totalScore"></div><div class="l">תשובות נכונות</div></div>
-      <div class="metric"><div class="v" id="totalPct"></div><div class="l">אחוז הצלחה</div></div>
+      <div class="metric"><div class="v" id="totalScore" dir="ltr"></div><div class="l">תשובות נכונות</div></div>
+      <div class="metric"><div class="v" id="totalPct" dir="ltr"></div><div class="l">אחוז הצלחה</div></div>
     </div>
     <button class="quiet" id="resetAll">🔄 מתחילים הכול מחדש</button>
   </section>
@@ -200,7 +200,7 @@ function renderSection(d, idx){
   const accent=COLORS[idx%COLORS.length];
   const sc=score(d), n=Object.keys(state.picks[d.id]).length, len=d.questions.length;
   const sec=el("section",{id:d.id, style:"--accent:"+accent});
-  sec.appendChild(el("div",{class:"shead"},[el("h2",{text:d.heading}), el("span",{class:"score"+(sc===len?" full":""), text:sc+" / "+len})]));
+  sec.appendChild(el("div",{class:"shead"},[el("h2",{text:d.heading}), el("span",{class:"score"+(sc===len?" full":""), dir:"ltr", text:sc+" / "+len})]));
   sec.appendChild(el("p",{class:"intro",text:d.intro}));
   const seed=state.seeds[d.id];
   const order=shuffle(d.questions.map((_,i)=>i), rng(seed*7919+d.id.length*31));
